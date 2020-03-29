@@ -1,0 +1,12 @@
+common.js "设置固定关注我们"判断条件有误 if($(#"follow-us")) 返回值无论何时都为true
+修改其判定参数为   if (document.getElementById('follow-us'))
+
+
+/*topnav select*/
+/*mnav dl open*/
+菜单点击效果
+三个函数无法执行
+
+
+优化ajax动态加载内容,分批次加载图片
+手动将图片分辨率调低

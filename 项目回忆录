@@ -1,0 +1,42 @@
+项目回忆录 v1.0  - your name
+
+问：“你在新项目中遇到哪些困难/具体负责的内容”
+答：“我们昨天开会决定新项目采取前后端分离；
+1.针对http无状态的问题，我们采取了token的解决方案【jwt,base64加密了基础数据，通过hmac-SHA256签名[key]】;在自主研发jwt签发/校验逻辑的过程中，我们发现b64转码结果中有很多‘=’占位符，严重影响了传输效率，加大了带宽成本【用户以及我们公司】，在这个问题上，我们调研了jwt官方的实现，发现jwt也进行了相关优化，替换掉了b64结果中的‘=’，并很巧妙地在解析过程中，补全替换掉的 ‘=’【调研了b64实现原理，发现b64
+编码后总长度一定是4的倍数。。。】；并且我们在header上也进行了一些优化->将jwt header部分取消；减少冗余；以上成果 得到了公司全体员工【领导】的高度认可
+
+2.老板说 - SEO 【搜索引擎优化】；我们初步的方案是根据搜索网站爬虫的user-agent返回纯静态【带内容文字】的网页，供其尽情的享受！但是这部分，可能晚辈细节把握不太到位，因为分给了前端工程师们去处理~
+
+3.csrf - token一定程度上加大了csrf的难度
+答：web版本的产品任务，我们遇到了跨域的问题；那我们调研了常规的跨域方案，script的src 以及 jquery的jsonp,cors; s-src实现成本高，只能是发get请求；jsonp只是简化了前端的工作，后端成本未改变，也是只能发get请求；由于cors的灵活性【支持各种http请求，且后端只需要进行一次通用配置，即可使用】。
+PS：我们起初尝试在线安装django-cors,发现本地django版本被强制升级到了2.0,原版本为1.11.8；此次意外升级，造成了项目有意外的报错
+
+在URL设计上，我们也是参照了RESTful的设计
+规范；
+	1，名词
+	2，HTTP method 的语义
+	3，接口版本问题 - v1v2v3...
+	4, 返回值-
+		1，code的使用【http response code/ 自定义code】
+		2，数据的返回
+
+答：我们在校验token的方式上采取了传参的装饰器并把需要校验的http method当做参数传入负责校验的装饰器，并在装饰器中将用户一并查出~赋值在request对象中，传入到视图函数！为了满足RESTful api的灵活性，我们设计get方法的url上，支持按需查询【按查询字符串中指定的字段】；通过hasattr进行确认，确定当前对象是否含有查询字符串中指定的属性【即确定了数据库中是否含有该字段】，当hasattr(obj, '属性')返回True，则证明对象有该属性，即可调用getattr(obj，'属性')【注意，getattr取不到属性时会抛出 异常】
+
+图片上传  request请求头 
+content-type:multipart/form-data
+
+settings.py
+MEDIA_URL = '/media/'
+#媒体资源存放的服务器目录
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+主路由
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns += static(settings.MEDIA_URL, 
+document_root=settings.MEDIA_ROOT)
+
+
+答：xss注入~产品上线一周后，我们发现内容列表页出现xss注入的弹框，虽然是简单地恶作剧但是让我们整体项目组对此事引起了高度的重视随后，我们后端小组在所有涉及到用户提交的地方都进行了相应的转义~解决了该隐患
+
