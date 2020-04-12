@@ -87,7 +87,6 @@ def topics(request, author_id):
         res = make_topics_res(author, topics)
         return JsonResponse(res)
 
-
     elif request.method == 'POST':
         # 创建用户博客数据
         json_str = request.body
