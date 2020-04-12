@@ -108,7 +108,7 @@ function makeHeader(blog_username, username){
     header_body += '<div class="menu">';
     header_body += '<nav class="nav" id="topnav">';
     header_body += '<h1 class="logo"><a href="/index">' + blog_username +'</a></h1>';
-    header_body += '<li><a href="/index">网站首页</a></li>';
+    header_body += '<li><a href="/index">主页</a></li>';
     header_body += '<li>';
     header_body += '<a href=' + '"' + user_topics_url + '"' + '>文章列表</a>';
     header_body += '<ul class="sub-nav">';
@@ -116,8 +116,29 @@ function makeHeader(blog_username, username){
     header_body += '<li><a href=' + '"' + user_topics_url + '?category=no-tec"' + '>非技术</a></li>';
     header_body += '</ul>';
     header_body += '</li>';
-    // header_body += '<li><a href="photo.html">我的相册</a> </li>';
-    // header_body += '<li><a href=' + '"' + user_photo + '"' + '>我的相册</a></li>';
+
+
+    header_body += '<li>';
+    header_body += '<a href=' + '"' + user_topics_url + '"' + '>技术文章</a>';
+    header_body += '<ul class="sub-nav">';
+    header_body += '<li><a href=' + '"' + user_topics_url + '?category=python"' + '>python</a></li>';
+    header_body += '<li><a href=' + '"' + user_topics_url + '?category=no-tec"' + '>非技术</a></li>';
+    header_body += '</ul>';
+    header_body += '</li>';
+
+
+    header_body += '<li>';
+    header_body += '<a href=' + '"' + user_topics_url + '"' + '>非技术文章</a>';
+    header_body += '<ul class="sub-nav">';
+    header_body += '<li><a href=' + '"' + user_topics_url + '?category=life"' + '>生活</a></li>';
+    header_body += '<li><a href=' + '"' + user_topics_url + '?category=no-tec"' + '>非技术</a></li>';
+    header_body += '</ul>';
+    header_body += '</li>';
+
+
+
+
+
     header_body += '<li><a href=' + '"' + user_info_url + '"' + '>关于我</a></li>';
     header_body += '<li><a href=' + '"' + topic_release_url + '"' + '>发表博客</a> </li>';
     header_body += '</nav>';
