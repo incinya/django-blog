@@ -8,6 +8,9 @@ from tools.login_check import login_check, get_user_by_request
 from .models import Topic
 from user.models import UserProfile
 
+TEC_CLASS = ['python', 'java', 'C++', '数据库', '其他', 'C语言']
+NO_TEC_CLASS = ['sport', 'food', 'sign', 'relaxation', 'no-tec']
+
 
 # Create your views here.
 @login_check('POST', 'DELETE')
@@ -79,7 +82,11 @@ def topics(request, author_id):
             return JsonResponse(result)
 
         category = request.GET.get('category')
-        if category:
+        if category == 'tec':
+            topics = Topic.objects.filter(category__in=TEC_CLASS)
+        elif category == 'no-tec':
+            topics = Topic.objects.filter(category__in=NO_TEC_CLASS)
+        elif category is not None:
             topics = Topic.objects.filter(category=category)
         else:
             topics = Topic.objects.all()
