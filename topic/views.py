@@ -10,6 +10,7 @@ from user.models import UserProfile
 
 TEC_CLASS = ['python', 'java', 'C++', '数据库', '其他', 'C语言']
 NO_TEC_CLASS = ['sport', 'food', 'sign', 'relaxation', 'no-tec']
+NUMS = 10
 
 
 # Create your views here.
@@ -35,52 +36,43 @@ def topics(request, author_id):
         if visitor:
             visitor_name = visitor.username
 
-        # 获取 t_id
+
+        # 筛选热门文章或者近期文章
+        tag = request.GET.get('tag')
+        if tag:
+            if tag == 'hot':
+                topics = Topic.objects.order_by('-view_count')[:NUMS]
+                res = make_topics_res(author, topics)
+            elif tag == 'recent':
+                topics = Topic.objects.all().order_by('-modified_time')[:NUMS]
+                res = make_topics_res(author, topics)
+            else:
+                res = {'code': 312, 'error': 'no topics'}
+            return JsonResponse(res)
+
+        # 获取 t_id 查询具体一条博客
         t_id = request.GET.get('t_id')
         # 若有t_id存在,执行tid查询语句
         if t_id:
             # 此变量代表是否是自己访问自己(给默认值的时候给Flase,否则如果后面逻辑问题.会直接显示隐私)
             is_self = False
-
             t_id = int(t_id)
+
             # 根据t_id进行查询
             if author_id == visitor_name:
-                # 此情况表示博主访问自己的博客
-                try:
-                    author_topic = Topic.objects.get(id=t_id)
-                    # 测试 #
-                    """
-                    {'_state': <django.db.models.base.ModelState object at 0x7f7ed6a82048>, 
-                    'id': 2, 'title': 'the first', 
-                    'category': 'tec', 
-                    'limit': 'public', 
-                    'introduce': 'this is the first blog', 
-                    'content': '<p>this is the first blog</p>', 
-                    'created_time': datetime.datetime(2019, 9, 2, 9, 35, 12, 646314), 
-                    'modified_time': datetime.datetime(2019, 9, 2, 9, 35, 12, 646345), 
-                    'author_id': 'alicinya'}
-                    """
-
-
-
-                except Exception:
-                    result = {'code': 312, 'error': 'no topic'}
-                    return JsonResponse(result)
+                author_topic = Topic.objects.filter(id=t_id).first()
             else:
-                # 此情况表示访客访问博主的博客
-                try:
-                    author_topic = Topic.objects.get(id=t_id, limit='public')
+                author_topic = Topic.objects.filter(id=t_id, limit='public').first()
 
+            if author_topic is None:
+                return JsonResponse({'code': 312, 'error': 'no topic'})
+            else:
+                author_topic.view_count += 1
+                author_topic.save()
+                result = make_topic_res(author, author_topic, is_self)
+                return JsonResponse(result)
 
-                except Exception as e:
-                    result = {'code': 313, 'error': 'no topic!'}
-                    return JsonResponse(result)
-
-            # author_topic文章搜寻对象的主体
-            result = make_topic_res(author, author_topic, is_self)
-            aa = 1
-            return JsonResponse(result)
-
+        # 按标签查博客
         category = request.GET.get('category')
         if category == 'tec':
             topics = Topic.objects.filter(category__in=TEC_CLASS)
@@ -177,7 +169,8 @@ def make_topics_res(author, topics):
         d['category'] = topic.category
         d['introduce'] = topic.introduce
         d['author'] = topic.author_id
-        d['created_time'] = topic.created_time.strftime('%Y-%m-%d %H:%M:%S')
+        d['modify_time'] = topic.modified_time.strftime('%Y-%m-%d %H:%M:%S')
+        d['view_count'] = topic.view_count
         # 测试 #
         # print(topic.__dict__)
         """
