@@ -12,7 +12,7 @@ class Topic(models.Model):
     introduce = models.CharField(max_length=90, verbose_name='文章简介')
     content = models.TextField(verbose_name='文章内容')
     created_time = models.DateTimeField(auto_now_add=True)
-    modified_time = models.DateTimeField(auto_now=True)
+    modified_time = models.DateTimeField(auto_now_add=True)
     view_count = models.IntegerField(default=0)
     # 外键
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)

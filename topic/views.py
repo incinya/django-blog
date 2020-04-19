@@ -36,6 +36,13 @@ def topics(request, author_id):
         if visitor:
             visitor_name = visitor.username
 
+        # 按名称搜索文章
+        title = request.GET.get('title')
+        if title:
+            topics = Topic.objects.filter(title__contains=title)
+            res = make_topics_res(author, topics)
+            return JsonResponse(res)
+
 
         # 筛选热门文章或者近期文章
         tag = request.GET.get('tag')

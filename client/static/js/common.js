@@ -150,11 +150,19 @@ function makeHeader(blog_username, username) {
 
     header_body += '<li><a href=' + '"' + user_info_url + '"' + '>关于我</a></li>';
     header_body += '<li><a href=' + '"' + topic_release_url + '"' + '>发表博客</a> </li>';
+
+    header_body += '<li><input placeholder="请输入文章标题" id="search_title" /></li>';
+    header_body += '<li><button  id="search_title" onclick="search_title()" >搜索</button></li>';
+
     header_body += '</nav>';
     header_body += '</div>';
+
     if (username) {
         header_body += '<li><a href= /' + username + '/change_info id="change_info" target="_blank">编辑</a></li>';
         //header_body += '<li><a href="/" id="login_out" target="_blank">登出</a></li>';
+
+
+
         header_body += '<li><span id="login_out" target="_blank">登出</span></li>';
     } else {
         header_body += '<a href="/login" id="login" target="_blank">登陆</a>';
@@ -176,4 +184,11 @@ function loginOut() {
             }
         }
     )
+}
+
+function search_title() {
+
+    const title = $('#search_title').val()
+    window.location.href = `/alice/topics/?title=${title}`;
+
 }
