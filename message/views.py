@@ -11,7 +11,8 @@ from user.models import UserProfile
 
 
 @login_check("POST")
-def messages(request, topic_id):
+def messages(request):
+    topic_id = request.path.split('/')[-1]
     if request.method != "POST":
         result = {'code': 401, 'error': 'please use POST'}
         return JsonResponse(result)

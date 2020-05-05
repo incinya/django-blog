@@ -43,7 +43,6 @@ def topics(request, author_id):
             res = make_topics_res(author, topics)
             return JsonResponse(res)
 
-
         # 筛选热门文章或者近期文章
         tag = request.GET.get('tag')
         if tag:

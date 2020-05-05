@@ -162,7 +162,6 @@ function makeHeader(blog_username, username) {
         //header_body += '<li><a href="/" id="login_out" target="_blank">登出</a></li>';
 
 
-
         header_body += '<li><span id="login_out" target="_blank">登出</span></li>';
     } else {
         header_body += '<a href="/login" id="login" target="_blank">登陆</a>';
@@ -189,6 +188,7 @@ function loginOut() {
 function search_title() {
 
     const title = $('#search_title').val()
-    window.location.href = `/alice/topics/?title=${title}`;
+    const user = window.localStorage.getItem('dnblog_user');
+    window.location.href = `/${user}/topics/?title=${title}`;
 
 }
