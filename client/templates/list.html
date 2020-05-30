@@ -99,6 +99,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                         var time = topics[t].modify_time;
                         var introduce = topics[t].introduce;
                         var author = topics[t].author;
+                        console.log(topics)
                         let view_count = topics[t].view_count;
                         html_body += '<div class="blogsbox" style="width: 500px">';
                         html_body += '<div class="blogs" data-scroll-reveal="enter bottom over 1s">';
@@ -118,7 +119,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                         html_body += '<li >' + '点击量&nbsp' + view_count + '</li>';
                         if (blog_username == username) {
                             html_body += '<li class="" style="display:none"></li>';
-                            html_body += '<li class="" style="padding-left:20px">编辑</li>';
+                            html_body += '<li class="" style="padding-left:20px"><a href ="/alice/topic/release/?id='+topics[t].id +'">编辑</a></li>';
                             html_body += '<li class="delete" style="padding-left:20px" data=' + topics[t].id + '>删除</li>';
                         }
                         html_body += '</ul>';

@@ -4,6 +4,7 @@ from user.models import UserProfile
 
 # Create your models here.
 class Topic(models.Model):
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=50, verbose_name='文章标题')
     # tec - 技术类，  no-tec  非技术类
     category = models.CharField(max_length=20, verbose_name='文章分类')

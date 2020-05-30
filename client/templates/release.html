@@ -27,10 +27,12 @@ A ny individuals and organizations and not for commercial use, professiona websi
 <body>
 </body>
 
-  <script>
+<script>
+
       token = window.localStorage.getItem('dnblog_token');
       //登陆的用户名
       username = window.localStorage.getItem('dnblog_user');
+
       var html_body = ''
       $.ajax({
       // 请求方式
@@ -113,6 +115,8 @@ A ny individuals and organizations and not for commercial use, professiona websi
               //初始化登出
               loginOut()
               var E = window.wangEditor
+              window.modify = 0
+              window.t_id = 0
               editor = new E('#editor')
               // 或者 var editor = new E( document.getElementById('editor') )
               editor.create()
@@ -123,7 +127,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                   var title = $('.comment_input').val()
                   var limit = $("input[name='limit']:checked").val()
                   var category = $("input[name='category']:checked").val()
-                  var post_data = {'content': content, 'content_text':content_text,'limit': limit, 'title':title, 'category':category}
+                  var post_data = {'content': content, 'content_text':content_text,'limit': limit, 'title':title, 'category':category,'modify':window.modify,'t_id': window.t_id}
 
                   $.ajax({
                   // 请求方式
@@ -151,12 +155,47 @@ A ny individuals and organizations and not for commercial use, professiona websi
                  })
             })
 
+                  //请求修改?
+      if(window.location.search) {
+          let id = window.location.search.split('=').pop()
+
+          $.ajax({
+              // 请求方式
+              type: "get",
+              // url
+              url: "http://127.0.0.1:8000/v1/topics/"+username+"?t_id=" + id + "&module=put",
+
+              async: false,
+              beforeSend: function (request) {
+                  request.setRequestHeader("Authorization", token);
+              },
+              success: function (result) {
+
+                  let content = window.editor.textElemId
+
+                  document.getElementById(content).innerHTML = result.data.content
+                  document.getElementById("author").value = result.data.title
+                  $(`:radio[name='category'][value=${result.data.category}]`).prop("checked", "checked");
+                  window.modify = 1
+                  window.t_id = id
+              }
+
+          })
+      }
+
+
           }else{
 
               alert(result.error)
           }
        }
     });
+
+
+
+
+
+
 
   </script>
 

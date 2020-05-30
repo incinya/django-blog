@@ -1,4 +1,5 @@
 import json
+import re
 
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -76,7 +77,11 @@ def topics(request, author_id):
                 author_topic.view_count += 1
                 author_topic.save()
                 result = make_topic_res(author, author_topic, is_self)
-                return JsonResponse(result)
+                try:
+                    if request.GET.get('module') == 'put':
+                        del result['data']['messages']
+                finally:
+                    return JsonResponse(result)
 
         # 按标签查博客
         category = request.GET.get('category')
@@ -126,9 +131,25 @@ def topics(request, author_id):
             return JsonResponse(result)
         category = json_obj.get('category')
 
-        # 创建数据
-        Topic.objects.create(title=title, category=category, limit=limit, content=content, introduce=introduce,
-                             author=request.user)
+        # 创建数据或者修改数据
+        res = re.findall('"t_id":"(.*?)"}', request.body.decode())
+        t_id = res[0] if res else None
+        if t_id:
+            instance = Topic.objects.get(id=t_id)
+            instance.title = title
+            instance.category = category
+            instance.limit = limit
+            instance.content = content
+            instance.introduce = introduce
+            instance.author = request.user
+            instance.save()
+        else:
+            Topic.objects.create(title=title, category=category, limit=limit,
+                                 content=content,
+                                 introduce=introduce,
+                                 author=request.user,
+                                 )
+
         result = {'code': 200, 'username': request.user.username}
         return JsonResponse(result)
 
