@@ -1,2 +1,3 @@
 # django-blog
-基于django精简的个人博客系统
+利用python 快速搭建博客服务器
+django-flask 实现前后端分离
